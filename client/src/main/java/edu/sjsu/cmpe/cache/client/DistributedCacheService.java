@@ -55,4 +55,18 @@ public class DistributedCacheService implements CacheServiceInterface {
             System.out.println("Failed to add to the cache.");
         }
     }
+
+    @Override
+    public String getAllValues() {
+        HttpResponse<JsonNode> response = null;
+        try {
+            response = Unirest.get(this.cacheServerUrl + "/cache")
+                    .header("accept", "application/json").asJson();
+        } catch (UnirestException e) {
+            System.err.println(e);
+        }
+        String value = response.getBody().getArray().toString();
+
+        return value;
+    }
 }
