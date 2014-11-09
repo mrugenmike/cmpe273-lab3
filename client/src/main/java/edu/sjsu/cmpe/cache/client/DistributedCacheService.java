@@ -4,6 +4,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.json.JSONArray;
 
 /**
  * Distributed cache service
@@ -65,8 +66,15 @@ public class DistributedCacheService implements CacheServiceInterface {
         } catch (UnirestException e) {
             System.err.println(e);
         }
-        String value = response.getBody().getArray().toString();
+        JSONArray array = response.getBody().getArray();
+        StringBuilder valuesBuilder = new StringBuilder().append("Values:");
+        StringBuilder keyBuilder = new StringBuilder().append("Keys:");
+        for(int length = 0;length < array.length();length++){
+            valuesBuilder.append(" "+array.getJSONObject(length).getString("value"));
+            keyBuilder.append(" "+ array.getJSONObject(length).getInt("key"));
+        }
 
-        return value;
+
+        return new StringBuilder().append(valuesBuilder.toString()+"\n"+ keyBuilder.toString()).toString();
     }
 }
